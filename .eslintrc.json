@@ -12,9 +12,12 @@
     "project": ["**/tsconfig.json"]
   },
   "plugins": ["@typescript-eslint"],
-  "ignorePatterns": ["**/build/*", "**/node_modules/*", "**/public/*", "**/tsconfig/*"],
+  "ignorePatterns": ["**/build/*", "**/node_modules/*", "**/public/*", "**/tsconfig/*", "**/prisma/*"],
   "rules": {
     "@typescript-eslint/consistent-type-imports": "off",
-    "@typescript-eslint/no-confusing-void-expression": "off"
+    "@typescript-eslint/no-confusing-void-expression": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "object-shorthand": "off"
   }
 }
