@@ -38,7 +38,7 @@ const register = async (req: Request, res: Response): Promise<any> => {
     return
   }
 
-  if (error === true) {
+  if (error ?? false) {
     res.status(422).json({
       status: false,
       message: error.details[0].message
