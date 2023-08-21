@@ -7,6 +7,10 @@ const secretKey: string = 'This is a secret key'
 
 const salt = bcrypt.genSaltSync(10)
 
+interface AuthorizationToken extends Request {
+  user?: any
+}
+
 interface User {
   id: string
   email: string
@@ -115,7 +119,7 @@ const login = async (req: Request, res: Response): Promise<any> => {
   })
 }
 
-const authorize = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+const authorize = async (req: AuthorizationToken, res: Response, next: NextFunction): Promise<any> => {
   try {
     const bearerToken = req.headers.authorization
     let token: string = ''
@@ -124,8 +128,9 @@ const authorize = async (req: Request, res: Response, next: NextFunction): Promi
     } else {
       token = ''
     }
-    jwt.verify(token, secretKey)
-    // const user = await service.get(tokenPayload.id?tokenPayload.id:'')
+    const tokenPayload = jwt.verify(token, secretKey)
+
+    req.user = tokenPayload
     next()
   } catch (err: any) {
     res.status(401).json({
