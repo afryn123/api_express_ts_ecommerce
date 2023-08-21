@@ -8,8 +8,10 @@
 #production
 /build
 /dist
+./src/config
+/prisma/migrations
 
 #misc
 DS_Store
-.package-lock.json
+package-lock.json
 .env

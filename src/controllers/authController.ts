@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import service from '../services/authService'
 import validate from '../middleware/userValidation'
-const secretKey: string = 'This is a secret key'
+const secretKey: string = process.env.SECRET_KEY ?? 'Default'
 
 const salt = bcrypt.genSaltSync(10)
 
@@ -18,13 +18,6 @@ interface User {
   password?: string
   image: string
 }
-
-// interface Responses {
-//   success: boolean
-//   data?: any
-//   token?: string
-//   message?: string
-// }
 
 const register = async (req: Request, res: Response): Promise<any> => {
   const user = await service.getByEmail(req.body.email)
