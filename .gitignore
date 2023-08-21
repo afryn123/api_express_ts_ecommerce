@@ -1,5 +1,8 @@
 #depedencies
 /node_modules
+/prisma/migrations
+
+
 
 #testing
 /coverage
@@ -8,10 +11,10 @@
 #production
 /build
 /dist
-./src/config
-/prisma/migrations
 
 #misc
 DS_Store
 package-lock.json
+
+
 .env
