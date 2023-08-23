@@ -22,7 +22,14 @@ interface User {
 const register = async (req: Request, res: Response): Promise<any> => {
   const user = await service.getByEmail(req.body.email)
 
-  const { error } = validate.validateRegister(req.body) // Finds the validation errors in this request and wraps them in an object with handy functions
+  const { error } = validate.validateRegister(req.body)
+  if (error ?? false) {
+    res.status(422).json({
+      status: false,
+      message: error.details[0].message
+    })
+    return
+  }
   if (user !== null) {
     res.status(403).json({
       success: false,
@@ -31,14 +38,7 @@ const register = async (req: Request, res: Response): Promise<any> => {
     return
   }
 
-  if (error ?? false) {
-    res.status(422).json({
-      status: false,
-      message: error.details[0].message
-    })
-    return
-  }
-  const { name, email, image } = req.body
+  const { name, email, image }: User = req.body
   const password = bcrypt.hashSync(req.body.password, salt)
   const newUsers = {
     name,
@@ -62,7 +62,7 @@ const register = async (req: Request, res: Response): Promise<any> => {
     })
 }
 
-const checkPassword = async (encryptedPassword: any, password: any): Promise<boolean> => {
+const checkPassword = async (encryptedPassword: string, password: string): Promise<boolean> => {
   const result: boolean = await new Promise((resolve, reject) => {
     bcrypt.compare(password, encryptedPassword, (err, isValid): void => {
       if (err !== null) {
@@ -75,7 +75,7 @@ const checkPassword = async (encryptedPassword: any, password: any): Promise<boo
   return result
 }
 
-const createToken = (payload: User): string => jwt.sign(payload, secretKey, { expiresIn: '2d' })
+const createToken = (payload: Pick<User, 'id' | 'name'>): string => jwt.sign(payload, secretKey, { expiresIn: '2d' })
 
 const login = async (req: Request, res: Response): Promise<any> => {
   const user = await service.getByEmail(req.body.email)
@@ -98,12 +98,10 @@ const login = async (req: Request, res: Response): Promise<any> => {
     return
   }
 
-  const { id, name, email, image } = user
+  const { id, name } = user
   const token = createToken({
     id,
-    name,
-    email,
-    image
+    name
   })
 
   res.status(201).json({
@@ -133,4 +131,22 @@ const authorize = async (req: AuthorizationToken, res: Response, next: NextFunct
   }
 }
 
-export default { login, authorize, register }
+const remove = async (req: Request, res: Response): Promise<any> => {
+  const id: string = req.params.id
+  service
+    .remove(id)
+    .then(() => {
+      res.status(200).json({
+        success: true,
+        message: `Data ${id} successfully removed`
+      })
+    })
+    .catch((err: any) => {
+      res.status(401).json({
+        success: false,
+        message: err.message
+      })
+    })
+}
+
+export default { login, authorize, register, remove }

@@ -11,26 +11,55 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(cuid())
-  name     String
-  password String
-  email    String   @unique
-  image    String   @db.Text
-  recipes  Recipe[]
+  id        String    @id @default(cuid())
+  name      String
+  password  String
+  email     String    @unique
+  image     String?   @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  recipes   Recipe[]
+  comments  Comment[]
 }
 
 model Recipe {
-  id           String @id @default(cuid())
-  category     String
-  status       Status
-  descriptions String @db.Text
-  cooks        String @db.Text
-  image        String @db.Text
-  author       User   @relation(fields: [author_id], references: [id])
+  id           String          @id @default(cuid())
+  title        String
+  category     CategoryRecipes
+  status       Status          @default(public)
+  descriptions String          @db.Text
+  cooks        String          @db.Text
+  image        String?         @db.Text
+  avg_rating   Decimal?        @db.Decimal
+  author       User            @relation(fields: [author_id], references: [id])
   author_id    String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime?       @updatedAt
+  comments     Comment[]
+
+  @@index([category, status, author_id], type: BTree)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  comment   String?  @db.Text
+  rating    Int      @db.SmallInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  recipe    Recipe   @relation(fields: [recipe_id], references: [id])
+  recipe_id String
+  author    User     @relation(fields: [author_id], references: [id])
+  author_id String
+
+  @@index([author_id, recipe_id], type: BTree)
 }
 
 enum Status {
   private
   public
+}
+
+enum CategoryRecipes {
+  food
+  drink
 }

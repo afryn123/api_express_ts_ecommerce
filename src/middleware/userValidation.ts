@@ -14,7 +14,7 @@ const validateRegister = (payload: User): any => {
     password: Joi.string()
       .pattern(/^[a-zA-Z0-9]{3,30}$/)
       .required(),
-    image: Joi.string()
+    image: Joi.string().required().allow(null, '')
   })
   return schema.validate(payload)
 }

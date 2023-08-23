@@ -2,10 +2,12 @@ import express, { Application, Request, Response, NextFunction } from 'express'
 import bodyParser from 'body-parser'
 import routerAuth from './routes/auth'
 import routerRecipe from './routes/recipe'
+import cors from 'cors'
 
 const app: Application = express()
 const port: number = 4000
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 

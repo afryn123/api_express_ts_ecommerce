@@ -6,7 +6,8 @@ interface AuthorizationToken extends Request {
   user?: any
 }
 interface Recipe {
-  category: string
+  category: 'food' | 'drink'
+  title: string
   status: 'private' | 'public'
   descriptions: string
   cooks: string
@@ -15,10 +16,10 @@ interface Recipe {
 }
 
 const create = async (req: AuthorizationToken, res: Response, next: NextFunction): Promise<any> => {
-  const { category, status, cooks, descriptions, image } = req.body
+  const { category, title, status, cooks, descriptions, image } = req.body
   const authorId: string = req.user.id.toLowerCase()
 
-  const newRecipe: Recipe = { category, status, cooks, descriptions, image, author_id: authorId }
+  const newRecipe: Recipe = { category, title, status, cooks, descriptions, image, author_id: authorId }
   const { error } = validate.validateRecipe(newRecipe)
 
   if (error ?? false) {
