@@ -8,6 +8,7 @@ const router = express.Router()
 
 router.route('/api/register').post(authController.register)
 router.route('/api/login').post(authController.login)
+router.route('/api/user').get(authController.authorize, authController.getMyProfile)
 router.route('/api/user/:id').delete(authController.remove)
 // router.route('/api/authorized').post(authController.authorize)
 

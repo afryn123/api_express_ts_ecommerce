@@ -23,6 +23,14 @@ const create = async (value: Omit<Comment, 'id'>): Promise<void> => {
   })
 }
 
+const createMany = async (value: any): Promise<any> => {
+  await prisma.$transaction(async (tx) => {
+    await tx.comment.createMany({
+      data: value
+    })
+  })
+}
+
 const getById = async (id: string): Promise<CommentType> => await prisma.comment.findUnique({ where: { id: id } })
 
 const getRecipeId = async (recipeId: string): Promise<CommentTypeArr> =>
@@ -36,6 +44,7 @@ const remove = async (id: string): Promise<void> => {
 
 export default {
   create,
+  createMany,
   getById,
   getRecipeId,
   remove

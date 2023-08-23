@@ -6,17 +6,17 @@ import validate from '../middleware/userValidation'
 const secretKey: string = process.env.SECRET_KEY ?? 'Default'
 
 const salt = bcrypt.genSaltSync(10)
-
-interface AuthorizationToken extends Request {
-  user?: any
-}
-
 interface User {
   id: string
   email: string
   name: string
   password?: string
-  image: string
+  image: string | null
+}
+
+type UserType = Partial<User> | null
+interface AuthorizationToken extends Request {
+  user?: any
 }
 
 const register = async (req: Request, res: Response): Promise<any> => {
@@ -64,8 +64,8 @@ const register = async (req: Request, res: Response): Promise<any> => {
 
 const checkPassword = async (encryptedPassword: string, password: string): Promise<boolean> => {
   const result: boolean = await new Promise((resolve, reject) => {
-    bcrypt.compare(password, encryptedPassword, (err, isValid): void => {
-      if (err !== null) {
+    bcrypt.compare(password, encryptedPassword, (err, isValid): any => {
+      if (err ?? false) {
         reject(err)
         return
       }
@@ -78,8 +78,7 @@ const checkPassword = async (encryptedPassword: string, password: string): Promi
 const createToken = (payload: Pick<User, 'id' | 'name'>): string => jwt.sign(payload, secretKey, { expiresIn: '2d' })
 
 const login = async (req: Request, res: Response): Promise<any> => {
-  const user = await service.getByEmail(req.body.email)
-
+  const user = await service.getPassByEmail(req.body.email)
   if (user === null) {
     res.status(404).json({
       succeess: false,
@@ -131,6 +130,18 @@ const authorize = async (req: AuthorizationToken, res: Response, next: NextFunct
   }
 }
 
+const getMyProfile = async (req: AuthorizationToken, res: Response): Promise<void> => {
+  const id: string = req.user.id
+  await service
+    .getMyProfile(id)
+    .then((data: UserType) => {
+      res.status(200).json({ success: true, data: data })
+    })
+    .catch((err) => {
+      res.status(403).json({ success: false, message: err })
+    })
+}
+
 const remove = async (req: Request, res: Response): Promise<any> => {
   const id: string = req.params.id
   service
@@ -149,4 +160,4 @@ const remove = async (req: Request, res: Response): Promise<any> => {
     })
 }
 
-export default { login, authorize, register, remove }
+export default { login, authorize, register, remove, getMyProfile }

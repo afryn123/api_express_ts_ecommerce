@@ -13,6 +13,7 @@ const validateRecipe = (payload: Recipe): any => {
   const schema = Joi.object({
     category: Joi.string().required(),
     status: Joi.string().valid('private', 'public').required(),
+    title: Joi.string().required(),
     descriptions: Joi.string().required(),
     cooks: Joi.string().required(),
     image: Joi.string(),

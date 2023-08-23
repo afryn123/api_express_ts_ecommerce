@@ -46,4 +46,57 @@ const create = async (req: AuthorizationToken, res: Response, next: NextFunction
     })
 }
 
-export default { create }
+const getAll = async (res: Response): Promise<any> => {
+  service
+    .getAll()
+    .then((data) => {
+      res.status(401).json({
+        success: true,
+        data: data
+      })
+    })
+    .catch((err) => {
+      res.status(401).json({
+        success: false,
+        message: err.message
+      })
+    })
+}
+
+const getMyRecipe = async (req: AuthorizationToken, res: Response): Promise<any> => {
+  const authorId: string = req.user.id
+  service
+    .getByAuthorId(authorId)
+    .then((data) => {
+      res.status(401).json({
+        success: true,
+        data: data
+      })
+    })
+    .catch((err) => {
+      res.status(401).json({
+        success: false,
+        message: err.message
+      })
+    })
+}
+
+const getById = async (req: Request, res: Response): Promise<any> => {
+  const id: string = req.params.id
+  service
+    .getById(id)
+    .then((data) => {
+      res.status(401).json({
+        success: true,
+        data: data
+      })
+    })
+    .catch((err) => {
+      res.status(401).json({
+        success: false,
+        message: err.message
+      })
+    })
+}
+
+export default { create, getAll, getMyRecipe, getById }

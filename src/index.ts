@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from 'express'
 import bodyParser from 'body-parser'
 import routerAuth from './routes/auth'
 import routerRecipe from './routes/recipe'
+import routeComment from './routes/comment'
 import cors from 'cors'
 
 const app: Application = express()
@@ -16,4 +17,5 @@ app.use('/health', (req: Request, res: Response, next: NextFunction) => {
 })
 app.use(routerAuth)
 app.use(routerRecipe)
+app.use(routeComment)
 app.listen(port, () => console.log(`listening on port ${port}`))

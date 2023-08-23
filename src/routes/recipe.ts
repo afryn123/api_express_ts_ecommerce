@@ -7,8 +7,13 @@ const authController = controllers.authController
 
 const router = express.Router()
 
-router.route('/api/recipe').post(authController.authorize, recipeController.create)
-// router.route('/api/login').post(authController.login)
-// router.route('/api/authorized').post(authController.authorize)
+router
+  .route('/api/recipe')
+  .post(authController.authorize, recipeController.create)
+  .get(authController.authorize, recipeController.getAll)
+
+router.route('/api/recipe/myrecipe').get(authController.authorize, recipeController.getMyRecipe)
+
+router.route('/api/recipe/:id').get(authController.authorize, recipeController.getById)
 
 export default router

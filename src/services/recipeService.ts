@@ -41,6 +41,8 @@ const updateAvgRating = async (id: string, rating: number): Promise<void> => {
   })
 }
 
+const getAll = async (): Promise<RecipeTypeArray> => await prisma.recipe.findMany({ where: { status: 'public' } })
+
 const getById = async (id: string): Promise<RecipeType> => await prisma.recipe.findUnique({ where: { id: id } })
 
 const getByAuthorId = async (authorId: string): Promise<RecipeTypeArray> =>
@@ -55,6 +57,7 @@ export default {
   update,
   updateAvgRating,
   getById,
+  getAll,
   getByAuthorId,
   remove
 }
