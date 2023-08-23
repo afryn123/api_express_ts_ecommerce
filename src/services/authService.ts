@@ -6,7 +6,7 @@ interface User {
   email: string
   name: string
   password: string
-  image: string | null
+  image?: string | null
 }
 
 // interface newUser extends User {

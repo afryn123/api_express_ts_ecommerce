@@ -22,6 +22,13 @@ interface AuthorizationToken extends Request {
 const register = async (req: Request, res: Response): Promise<any> => {
   const user = await service.getByEmail(req.body.email)
 
+  if (user !== null) {
+    res.status(403).json({
+      success: false,
+      message: 'email sudah terdaftar'
+    })
+    return
+  }
   const { error } = validate.validateRegister(req.body)
   if (error ?? false) {
     res.status(422).json({
@@ -30,15 +37,9 @@ const register = async (req: Request, res: Response): Promise<any> => {
     })
     return
   }
-  if (user !== null) {
-    res.status(403).json({
-      success: false,
-      message: 'email sudah terdaftar'
-    })
-    return
-  }
 
-  const { name, email, image }: User = req.body
+  const { name, email }: User = req.body
+  const image = req.file?.filename
   const password = bcrypt.hashSync(req.body.password, salt)
   const newUsers = {
     name,
@@ -46,6 +47,7 @@ const register = async (req: Request, res: Response): Promise<any> => {
     password,
     image
   }
+
   service
     .create(newUsers)
     .then(() => {
