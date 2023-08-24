@@ -1,19 +1,17 @@
 import express, { Application, Request, Response, NextFunction } from 'express'
-import bodyParser from 'body-parser'
 import routerAuth from './routes/auth'
 import routerRecipe from './routes/recipe'
 import routerComment from './routes/comment'
+import bodyParser from 'body-parser'
 import cors from 'cors'
 import path from 'path'
-import upload from './middleware/multer'
 
 const app: Application = express()
 const port: number = 4000
 
-app.use(cors({ origin: 'http://localhost:30000' }))
-app.use(bodyParser.json())
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(upload.single('image'))
+app.use(bodyParser.json())
 
 app.use('/health', (req: Request, res: Response, next: NextFunction) => {
   res.status(200).send({ status: 200, message: 'Ok' })

@@ -1,5 +1,5 @@
 import multer, { FileFilterCallback } from 'multer'
-import { Request } from 'express'
+import { Request, Response, NextFunction } from 'express'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -14,14 +14,34 @@ const fileStorage = multer.diskStorage({
   }
 })
 
-const fileFilter = (request: Request, file: Express.Multer.File, callback: FileFilterCallback): void => {
+const fileFilter = (req: Request, file: Express.Multer.File, callback: FileFilterCallback): void => {
   if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
     callback(null, true)
   } else {
-    callback(null, false)
+    // req.fileValidationError = 'goes wrong on the mimetype';
+    callback(new Error('Image must in (png,jpg,jpeg)'))
   }
 }
 
-const upload = multer({ storage: fileStorage, fileFilter: fileFilter })
+const maxFileSize = 1 * 1024 * 1024
 
-export default upload
+const upload = multer({
+  storage: fileStorage,
+  fileFilter: fileFilter,
+  limits: { fileSize: maxFileSize }
+}).single('image')
+
+const handleUploadImage = (req: Request, res: Response, next: NextFunction): any => {
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(403).json({ success: false, message: err.message })
+    } else if (err) {
+      res.status(403).json({ success: false, message: err.message })
+      return
+    }
+    // Everything went fine.
+    next()
+  })
+}
+
+export default handleUploadImage

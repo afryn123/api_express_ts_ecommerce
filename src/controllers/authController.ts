@@ -11,7 +11,7 @@ interface User {
   id: string
   email: string
   name: string
-  password?: string
+  password: string
   image: string | null
 }
 
@@ -30,6 +30,15 @@ const register = async (req: Request, res: Response): Promise<any> => {
     })
     return
   }
+
+  const { name, email, password }: User = req.body
+  const image = req.file?.filename
+  const newUsers = {
+    name,
+    email,
+    password,
+    image
+  }
   const { error } = validate.validateRegister(req.body)
   if (error ?? false) {
     res.status(422).json({
@@ -38,18 +47,9 @@ const register = async (req: Request, res: Response): Promise<any> => {
     })
     return
   }
+  newUsers.password = bcrypt.hashSync(password, salt)
 
-  const { name, email }: User = req.body
-  const image = req.file?.filename
-  const password = bcrypt.hashSync(req.body.password, salt)
-  const newUsers = {
-    name,
-    email,
-    password,
-    image
-  }
-
-  service
+  await service
     .create(newUsers)
     .then(() => {
       res.status(201).json({
@@ -127,6 +127,7 @@ const authorize = async (req: AuthorizationToken, res: Response, next: NextFunct
     next()
   } catch (err: any) {
     res.status(401).json({
+      success: false,
       status: 'Unauthorized',
       message: err.message
     })

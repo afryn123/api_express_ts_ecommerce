@@ -5,7 +5,7 @@ interface Recipe {
   status: 'private' | 'public'
   descriptions: string
   cooks: string
-  image: string
+  image?: string
   author_id: string
 }
 
@@ -16,7 +16,7 @@ const validateRecipe = (payload: Recipe): any => {
     title: Joi.string().required(),
     descriptions: Joi.string().required(),
     cooks: Joi.string().required(),
-    image: Joi.string(),
+    image: Joi.string().allow('', null),
     author_id: Joi.string().required()
   })
   return schema.validate(payload)

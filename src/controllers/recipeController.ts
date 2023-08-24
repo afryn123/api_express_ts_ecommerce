@@ -11,12 +11,13 @@ interface Recipe {
   status: 'private' | 'public'
   descriptions: string
   cooks: string
-  image: string
+  image?: string
   author_id: string
 }
 
 const create = async (req: AuthorizationToken, res: Response, next: NextFunction): Promise<any> => {
-  const { category, title, status, cooks, descriptions, image } = req.body
+  const { category, title, status, cooks, descriptions } = req.body
+  const image = req.file?.filename
   const authorId: string = req.user.id.toLowerCase()
 
   const newRecipe: Recipe = { category, title, status, cooks, descriptions, image, author_id: authorId }
