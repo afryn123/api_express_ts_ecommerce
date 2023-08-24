@@ -1,6 +1,6 @@
 import express from 'express'
 import controllers from '../controllers'
-import handleUpload from '../middleware/multer'
+import handleUploadImage from '../middleware/multer'
 
 const recipeController = controllers.recipeController
 const authController = controllers.authController
@@ -10,7 +10,7 @@ const router = express.Router()
 router
   .route('/api/recipe')
   .get(recipeController.getAll)
-  .post(authController.authorize, handleUpload, recipeController.create)
+  .post(authController.authorize, handleUploadImage, recipeController.create)
 
 router.route('/api/recipe/myrecipe').get(authController.authorize, recipeController.getMyRecipe)
 
