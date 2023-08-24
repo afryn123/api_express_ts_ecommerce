@@ -1,7 +1,7 @@
 #depedencies
 /node_modules
 /prisma/migrations
-/src/assets/images/**
+
 
 #testing
 /coverage
