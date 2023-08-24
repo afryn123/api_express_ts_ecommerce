@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import service from '../services/recipeService'
-import validate from '../middleware/recipeValidation'
+import validate from '../validation/recipeValidation'
 
 interface AuthorizationToken extends Request {
   user?: any
@@ -30,7 +30,7 @@ const create = async (req: AuthorizationToken, res: Response, next: NextFunction
     return
   }
 
-  service
+  await service
     .create(newRecipe)
     .then(() => {
       res.status(401).json({
@@ -46,11 +46,11 @@ const create = async (req: AuthorizationToken, res: Response, next: NextFunction
     })
 }
 
-const getAll = async (res: Response): Promise<any> => {
-  service
+const getAll = async (req: Request, res: Response): Promise<any> => {
+  await service
     .getAll()
     .then((data) => {
-      res.status(401).json({
+      res.status(200).json({
         success: true,
         data: data
       })

@@ -2,7 +2,8 @@ import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import service from '../services/authService'
-import validate from '../middleware/userValidation'
+import validate from '../validation/userValidation'
+
 const secretKey: string = process.env.SECRET_KEY ?? 'Default'
 
 const salt = bcrypt.genSaltSync(10)

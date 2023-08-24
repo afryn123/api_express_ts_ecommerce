@@ -14,7 +14,7 @@ interface User {
 //   updatedAt?: Date | null
 // }
 
-type UserType = Pick<User, 'id' | 'name' | 'email'> | null
+type UserType = Pick<User, 'id' | 'name' | 'email' | 'image'> | null
 
 type PasswordType = Pick<User, 'password' | 'id' | 'name'> | null
 
@@ -39,7 +39,8 @@ const getMyProfile = async (id: string): Promise<UserType> =>
     select: {
       id: true,
       email: true,
-      name: true
+      name: true,
+      image: true
     }
   })
 

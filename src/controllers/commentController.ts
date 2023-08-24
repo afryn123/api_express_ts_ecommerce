@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import service from '../services/commentService'
-import validate from '../middleware/commentValidation'
+import validate from '../validation/commentValidation'
 
 interface AuthorizationToken extends Request {
   user?: any
@@ -26,7 +26,6 @@ const create = async (req: AuthorizationToken, res: Response): Promise<any> => {
     })
     return
   }
-
   await service
     .create(newData)
     .then(() => {
